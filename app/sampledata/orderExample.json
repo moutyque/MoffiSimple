@@ -1,0 +1,185 @@
+{
+  "company": {
+    "id": "2c91808277af2d160177b06b84740681"
+  },
+  "timezone": "Europe/Paris",
+  "coupon": null,
+  "bookings": [
+    {
+      "id": null,
+      "workspace": {
+        "id": "8a80819a78c535da0178cc473bca0efc"
+      },
+      "workspaceId": "8a80819a78c535da0178cc473bca0efc",
+      "start": "2023-04-05T05:30:00.000Z",
+      "end": "2023-04-05T20:00:00.000Z",
+      "places": 1,
+      "isMonthlyBooking": false,
+      "coupon": null,
+      "period": "DAY",
+      "bookedSeats": [
+        {
+          "seat": {
+            "id": "se_98389a55-da1b-4922-aefc-22d2c86ec980",
+            "entityType": "SEAT",
+            "createdAt": "2021-04-13T17:29:06.128Z",
+            "updatedAt": "2022-10-07T10:45:18.918Z",
+            "name": "43",
+            "fullname": "Desk2_ 43",
+            "position": 19,
+            "status": "ENABLED",
+            "mapInformation": {
+              "id": "mpi_se_98389a55-da1b-4922-aefc-22d2c86ec980",
+              "provider": "MOFFI",
+              "type": "SEAT",
+              "placeId": "pl_se_98389a55-da1b-4922-aefc-22d2c86ec980"
+            },
+            "allowRecurringEvents": true,
+            "favorite": false,
+            "hasServices": true,
+            "services": [
+              {
+                "id": "2c918083814717f20181632c6cfa6fdd",
+                "entityType": "SERVICE",
+                "type": {
+                  "id": "ff80808172502629017250273c100026",
+                  "name": "computer",
+                  "locales": {
+                    "en_GB": "Computer",
+                    "en": "Computer",
+                    "fr": "Ordinateur",
+                    "fr-FR": "Ordinateur",
+                    "fr_FR": "Ordinateur",
+                    "en-GB": "Computer"
+                  },
+                  "icon": "https://res.cloudinary.com/moffi/image/upload/v1582276124/serviceType/computer2.png",
+                  "parent": {
+                    "id": "ff80808172502629017250273c060025",
+                    "name": "computerSciences",
+                    "locales": {
+                      "en_GB": "Computer sciences",
+                      "en": "Computer sciences",
+                      "fr": "Informatique",
+                      "fr-FR": "Informatique",
+                      "fr_FR": "Informatique",
+                      "en-GB": "Computer sciences"
+                    },
+                    "icon": "https://ik.imagekit.io/moffi/service/informatique.png",
+                    "parent": {
+                      "id": "ff80808172502629017250273bdc0023",
+                      "name": "equipment",
+                      "locales": {
+                        "en_GB": "Equipment",
+                        "en": "Equipment",
+                        "fr": "Équipement",
+                        "fr-FR": "Équipement",
+                        "fr_FR": "Équipement",
+                        "en-GB": "Equipment"
+                      },
+                      "icon": "https://res.cloudinary.com/moffi/image/upload/v1582276124/serviceType/computer3.png"
+                    }
+                  }
+                },
+                "status": "ENABLED",
+                "createdAt": "2022-06-14T17:04:24.792Z",
+                "updatedAt": "2022-06-14T17:04:24.825Z",
+                "reference": "S-0046",
+                "title": "Ecran 27\" avec Dock et Webcam",
+                "description": "",
+                "bookable": true,
+                "duration": {
+                  "id": "2c918083814717f20181632c6cf96fdc",
+                  "type": "MINUTES",
+                  "nb": 5,
+                  "number": 5,
+                  "minutes": 5,
+                  "isEnabled": true
+                },
+                "requiresPreparation": false,
+                "deliveryLocation": "",
+                "isLinked": true,
+                "prices": [],
+                "workspaces": [],
+                "buildings": [],
+                "seats": [
+                  {
+                    "id": "se_1f4daca6-c433-4795-a3c9-a4edfd42c789",
+                    "entityType": "SEAT",
+                    "createdAt": "2021-04-13T17:29:06.120Z",
+                    "updatedAt": "2022-10-07T10:45:18.842Z",
+                    "name": "40",
+                    "fullname": "Desk2_ 40",
+                    "position": 16,
+                    "status": "ENABLED",
+                    "mapInformation": {
+                      "id": "mpi_se_1f4daca6-c433-4795-a3c9-a4edfd42c789",
+                      "provider": "MOFFI",
+                      "type": "SEAT",
+                      "placeId": "pl_se_1f4daca6-c433-4795-a3c9-a4edfd42c789"
+                    },
+                    "allowRecurringEvents": true,
+                    "favorite": false,
+                    "hasServices": true
+                  },
+                  {
+                    "id": "se_aa71b29b-0db6-407a-9ca4-66d45e637273",
+                    "entityType": "SEAT",
+                    "createdAt": "2021-04-13T17:29:06.112Z",
+                    "updatedAt": "2022-10-07T10:45:18.730Z",
+                    "name": "37",
+                    "fullname": "Desk2_ 37",
+                    "position": 13,
+                    "status": "ENABLED",
+                    "mapInformation": {
+                      "id": "mpi_se_aa71b29b-0db6-407a-9ca4-66d45e637273",
+                      "provider": "MOFFI",
+                      "type": "SEAT",
+                      "placeId": "pl_se_aa71b29b-0db6-407a-9ca4-66d45e637273"
+                    },
+                    "allowRecurringEvents": true,
+                    "favorite": false,
+                    "hasServices": true
+                  },
+                  {
+                    "id": "se_98389a55-da1b-4922-aefc-22d2c86ec980",
+                    "entityType": "SEAT",
+                    "createdAt": "2021-04-13T17:29:06.128Z",
+                    "updatedAt": "2022-10-07T10:45:18.918Z",
+                    "name": "43",
+                    "fullname": "Desk2_ 43",
+                    "position": 19,
+                    "status": "ENABLED",
+                    "mapInformation": {
+                      "id": "mpi_se_98389a55-da1b-4922-aefc-22d2c86ec980",
+                      "provider": "MOFFI",
+                      "type": "SEAT",
+                      "placeId": "pl_se_98389a55-da1b-4922-aefc-22d2c86ec980"
+                    },
+                    "allowRecurringEvents": true,
+                    "favorite": false,
+                    "hasServices": true
+                  }
+                ],
+                "isBookable": true,
+                "isAvailableForDateSelection": true
+              }
+            ],
+            "available": true
+          }
+        }
+      ],
+      "days": [
+        {
+          "day": "2023-04-05",
+          "date": "2023-04-05T05:30:00.000Z",
+          "period": "DAY"
+        }
+      ],
+      "bookNextToInfo": {
+        "id": null
+      },
+      "rrule": null
+    }
+  ],
+  "origin": "WIDGET"
+}
