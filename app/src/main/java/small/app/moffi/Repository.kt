@@ -24,9 +24,9 @@ import java.time.format.DateTimeFormatter
 const val BASE_URL = "https://api.moffi.io/api/"
 
 data class User(
-        @JsonProperty("email") val email: String,
-        @JsonProperty("password") val password: String,
-        @JsonProperty("captcha") val captcha: String = "NOT_PROVIDED"
+    @JsonProperty("email") val email: String,
+    @JsonProperty("password") val password: String,
+    @JsonProperty("captcha") val captcha: String = "NOT_PROVIDED"
 ) {
     fun isNotBlank(): Boolean = email.isNotBlank() && password.isNotBlank()
 }
@@ -44,15 +44,15 @@ interface MoffiApi {
     @Headers("Content-Type: application/json")
     @GET("buildings/{id}")
     fun buildingDetails(
-            @Header("Authorization") token: String,
-            @Path("id") id: String
+        @Header("Authorization") token: String,
+        @Path("id") id: String
     ): Call<JsonNode>
 
     @Headers("Content-Type: application/json")
     @GET("workspaces/availabilities")
     fun workspaceDetails(
-            @Header("Authorization") token: String,
-            @QueryMap(encoded = true) params: Map<String, String>
+        @Header("Authorization") token: String,
+        @QueryMap(encoded = true) params: Map<String, String>
     ): Call<JsonNode>
 
     @Headers("Content-Type: application/json")
@@ -61,14 +61,19 @@ interface MoffiApi {
 
 }
 
+const val PREF_COOKIES = "PREF_COOKIES"
+
 class AddCookiesInterceptor(private val context: Context) : Interceptor {
-    val PREF_COOKIES = "PREF_COOKIES"
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val builder = chain.request().newBuilder()
-        for (cookie in PreferenceManager.getDefaultSharedPreferences(context).getStringSet(PREF_COOKIES, HashSet())!!) {
+        for (cookie in PreferenceManager.getDefaultSharedPreferences(context)
+            .getStringSet(PREF_COOKIES, HashSet())!!) {
             builder.addHeader("Cookie", cookie)
-            Log.v("OkHttp", "Adding Header: $cookie") // This is done so I know which headers are being added; this interceptor is used after the normal logging of OkHttp
+            Log.v(
+                "OkHttp",
+                "Adding Header: $cookie"
+            ) // This is done so I know which headers are being added; this interceptor is used after the normal logging of OkHttp
         }
         return chain.proceed(builder.build())
     }
@@ -80,11 +85,12 @@ class ReceivedCookiesInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val originalResponse = chain.proceed(chain.request())
         if (originalResponse.headers("Set-Cookie").isNotEmpty()) {
-            val cookies = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("PREF_COOKIES", HashSet()) as HashSet<String>?
+            val cookies = PreferenceManager.getDefaultSharedPreferences(context)
+                .getStringSet("PREF_COOKIES", HashSet()) as HashSet<String>?
             for (header in originalResponse.headers("Set-Cookie")) {
                 cookies!!.add(header)
             }
-            val memes =  PreferenceManager.getDefaultSharedPreferences(context).edit()
+            val memes = PreferenceManager.getDefaultSharedPreferences(context).edit()
             memes.putStringSet("PREF_COOKIES", cookies).apply()
             memes.apply()
         }
@@ -94,17 +100,17 @@ class ReceivedCookiesInterceptor(private val context: Context) : Interceptor {
 
 class ServiceBuilder(context: Context) {
     private val okHttpClient: OkHttpClient = OkHttpClient()
-            .newBuilder()
-            .addInterceptor(AddCookiesInterceptor(context))
-            .addInterceptor(ReceivedCookiesInterceptor(context))
-            .build()
+        .newBuilder()
+        .addInterceptor(AddCookiesInterceptor(context))
+        .addInterceptor(ReceivedCookiesInterceptor(context))
+        .build()
 
     private val retrofit =
-            Retrofit.Builder()
-                    .client(okHttpClient)
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(JacksonConverterFactory.create())
-                    .build()
+        Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(BASE_URL)
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
 
     fun <T> buildService(service: Class<T>): T {
         return retrofit.create(service)
@@ -115,39 +121,39 @@ class RestApiService(context: Context) {
     private val retrofit = ServiceBuilder(context).buildService(MoffiApi::class.java)
 
     fun signing(userData: User) = retrofit.signing(userData)
-            .execute()
-            .body()
-            ?.get("token")
-            ?.textValue()
+        .execute()
+        .body()
+        ?.get("token")
+        ?.textValue()
 
     fun getCities(token: String) =
-            retrofit.buildings(token = token)
-                    .execute()
-                    .body()
+        retrofit.buildings(token = token)
+            .execute()
+            .body()
 
     fun getCityDetails(token: String, id: String) =
-            retrofit.buildingDetails(token = token, id = id)
-                    .execute()
-                    .body()
+        retrofit.buildingDetails(token = token, id = id)
+            .execute()
+            .body()
 
     fun getWorkspaceDetails(
-            token: String, id: String,
-            startDate: String = now(),
-            endDate: String = now(),
-            level: Int
+        token: String, id: String,
+        startDate: String = now(),
+        endDate: String = now(),
+        level: Int
     ) =
-            retrofit.workspaceDetails(
-                    token = token, params = mapOf(
-                    "buildingId" to id,
-                    "startDate" to startDate,
-                    "endDate" to endDate,
-                    "places" to "1",
-                    "period" to "DAY",
-                    "floor" to level.toString()
+        retrofit.workspaceDetails(
+            token = token, params = mapOf(
+                "buildingId" to id,
+                "startDate" to startDate,
+                "endDate" to endDate,
+                "places" to "1",
+                "period" to "DAY",
+                "floor" to level.toString()
             )
-            )
-                    .execute()
-                    .body()
+        )
+            .execute()
+            .body()
 
     private fun now(): String {
         val current = LocalDateTime.now()
@@ -156,19 +162,19 @@ class RestApiService(context: Context) {
     }
 
     fun order(token: String, order: Order) =
-            retrofit.order(token = token, order = order).execute().getBody()
+        retrofit.order(token = token, order = order).execute().getBody()
 
     fun <T> Response<T>.getBody(): Any? =
-            when (isSuccessful) {
-                true -> {
-                    Log.d("Repository", "Query ok")
-                    body()
-                }
-                false -> {
-                    Log.d("Repository", "Query ko")
-                    errorBody()
-                }
+        when (isSuccessful) {
+            true -> {
+                Log.d("Repository", "Query ok")
+                body()
             }
+            false -> {
+                Log.d("Repository", "Query ko")
+                errorBody()
+            }
+        }
 
 
 }
@@ -189,29 +195,29 @@ class Repository(applicationContext: Context) {
         token = signIn(user)
         Log.d("Repository", "Token fetch")
         val cities = apiService.getCities("Bearer $token")
-                ?.mapAsync {
-                    Building(
-                            id = it["id"].textValue(),
-                            name = it["name"].textValue(),
-                            companyId = it["company"]["id"].textValue()
-                    )
-                }
+            ?.mapAsync {
+                Building(
+                    id = it["id"].textValue(),
+                    name = it["name"].textValue(),
+                    companyId = it["company"]["id"].textValue()
+                )
+            }
         Log.d("Repository", "Cities fetch")
 
         val citiesDetails = cities?.mapAsync {
             apiService.getCityDetails(token, it.id)?.let { d ->
                 Building(
-                        id = d["id"].textValue(),
-                        name = d["name"].textValue(),
-                        companyId = d["company"]["id"].textValue(),
-                        floors = d.get("floors")?.let { n ->
-                            n.map { f ->
-                                Floor(
-                                        f["name"].textValue(),
-                                        f["level"].asInt()
-                                )
-                            }
-                        } ?: emptyList())
+                    id = d["id"].textValue(),
+                    name = d["name"].textValue(),
+                    companyId = d["company"]["id"].textValue(),
+                    floors = d.get("floors")?.let { n ->
+                        n.map { f ->
+                            Floor(
+                                f["name"].textValue(),
+                                f["level"].asInt()
+                            )
+                        }
+                    } ?: emptyList())
             } ?: Building("", "", "", emptyList())
         } ?: emptyList()
         Log.d("Repository", "Cities details fetch")
@@ -224,10 +230,10 @@ class Repository(applicationContext: Context) {
                                 mapper.readValue(seat.toString(), Seat::class.java)
                             } ?: emptyList()
                             Workspace(
-                                    id = node["id"].asText(),
-                                    name = node["workspace"]["title"].asText(),
-                                    companyId = b.companyId,
-                                    seats = seats
+                                id = node["id"].asText(),
+                                name = node["workspace"]["title"].asText(),
+                                companyId = b.companyId,
+                                seats = seats
                             )
                         }
                         f.copy(workspace = workspaces)
@@ -241,11 +247,14 @@ class Repository(applicationContext: Context) {
     }
 
     private fun signIn(user: User) =
-            apiService.signing(user) ?: throw IllegalStateException("Token not check")
+        apiService.signing(user) ?: throw IllegalStateException("Token not check")
 
     fun reserve(order: Order) =
-            if (user.isNotBlank()) apiService.order(signIn(user), order) else throw IllegalStateException(
-                    "Not signed in"
-            )
+        if (user.isNotBlank()) apiService.order(
+            token,
+            order
+        ) else throw IllegalStateException(
+            "Not signed in"
+        )
 
 }
