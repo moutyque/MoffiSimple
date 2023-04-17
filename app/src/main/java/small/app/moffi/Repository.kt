@@ -1,7 +1,6 @@
 package small.app.moffi
 
 import android.content.Context
-import android.preference.PreferenceManager
 import android.util.Log
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
@@ -9,14 +8,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.http.*
-import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -61,48 +58,9 @@ interface MoffiApi {
 
 }
 
-const val PREF_COOKIES = "PREF_COOKIES"
-
-class AddCookiesInterceptor(private val context: Context) : Interceptor {
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-        val builder = chain.request().newBuilder()
-        for (cookie in PreferenceManager.getDefaultSharedPreferences(context)
-            .getStringSet(PREF_COOKIES, HashSet())!!) {
-            builder.addHeader("Cookie", cookie)
-            Log.v(
-                "OkHttp",
-                "Adding Header: $cookie"
-            ) // This is done so I know which headers are being added; this interceptor is used after the normal logging of OkHttp
-        }
-        return chain.proceed(builder.build())
-    }
-}
-
-class ReceivedCookiesInterceptor(private val context: Context) : Interceptor {
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-        val originalResponse = chain.proceed(chain.request())
-        if (originalResponse.headers("Set-Cookie").isNotEmpty()) {
-            val cookies = PreferenceManager.getDefaultSharedPreferences(context)
-                .getStringSet("PREF_COOKIES", HashSet()) as HashSet<String>?
-            for (header in originalResponse.headers("Set-Cookie")) {
-                cookies!!.add(header)
-            }
-            val memes = PreferenceManager.getDefaultSharedPreferences(context).edit()
-            memes.putStringSet("PREF_COOKIES", cookies).apply()
-            memes.apply()
-        }
-        return originalResponse
-    }
-}
-
-class ServiceBuilder(context: Context) {
+object ServiceBuilder {
     private val okHttpClient: OkHttpClient = OkHttpClient()
         .newBuilder()
-        .addInterceptor(AddCookiesInterceptor(context))
-        .addInterceptor(ReceivedCookiesInterceptor(context))
         .build()
 
     private val retrofit =
@@ -117,8 +75,8 @@ class ServiceBuilder(context: Context) {
     }
 }
 
-class RestApiService(context: Context) {
-    private val retrofit = ServiceBuilder(context).buildService(MoffiApi::class.java)
+object RestApiService {
+    private val retrofit = ServiceBuilder.buildService(MoffiApi::class.java)
 
     fun signing(userData: User) = retrofit.signing(userData)
         .execute()
@@ -186,7 +144,7 @@ suspend fun <T, R> Iterable<T>?.mapAsync(transform: (T) -> R): List<R>? = this?.
 }?.awaitAll()
 
 class Repository(applicationContext: Context) {
-    private val apiService = RestApiService(applicationContext)
+    private val apiService = RestApiService
     private var token: String = ""
     private var user: User = User("", "")
     suspend fun getData(user: User): List<Building> {
